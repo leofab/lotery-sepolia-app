@@ -1,16 +1,19 @@
-import logo from './logo.svg';
 import './App.css';
 import web3 from './web3';
-
 import lotery from './lotery';
-import { useEffect } from 'react';
-import { accounts } from 'web3/lib/commonjs/eth.exports';
+import { useEffect, useState } from 'react';
 
 function App() {
+  const [manager, setManager] = useState('');
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const manager = await lotery.methods.getManager().call({ from: accounts[0] });
+        if (web3 && web3.eth && web3.eth.net.isListening()) {
+          const managerData = await lotery.methods.getManager().call();
+          setManager(managerData);
+        } else {
+          console.log('Web3 provider is not available or connected');
+        }
       } catch (error) {
         console.log('Error fetching data:', error);
       }
@@ -19,20 +22,8 @@ function App() {
   }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h2>Lotery Contract</h2>
+      <p>This contract is managed by {manager}</p>
     </div>
   );
 }
