@@ -2,8 +2,21 @@ import logo from './logo.svg';
 import './App.css';
 import web3 from './web3';
 
+import lotery from './lotery';
+import { useEffect } from 'react';
+import { accounts } from 'web3/lib/commonjs/eth.exports';
+
 function App() {
-  web3.eth.getAccounts().then(console.log);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const manager = await lotery.methods.getManager().call({ from: accounts[0] });
+      } catch (error) {
+        console.log('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <div className="App">
       <header className="App-header">
