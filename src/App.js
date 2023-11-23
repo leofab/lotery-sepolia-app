@@ -7,7 +7,7 @@ function App() {
   const [manager, setManager] = useState('');
   let [players, setPlayers] = useState([]);
   let [balance, setBalance] = useState('');
-  let [value, setValue] = useState('');
+  let [value, setValue] = useState(0);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -45,7 +45,7 @@ function App() {
     <div className="App">
       <h2>Lotery Contract</h2>
       <p>
-        This contract is managed by {manager}.
+        This contract is managed by {manager}.<br />
         There are currently {players.length} people entered,
         competing to win {web3.utils.fromWei(balance, 'ether')} ether!
       </p>
@@ -53,7 +53,7 @@ function App() {
       <h4>Want to try your luck?</h4>
       <form onSubmit={onSubmit}>
         <label>Amount of ether to enter </label>
-        <input type="text" value={value} onChange={event => setValue({ value: event.target.value })} />
+        <input type="number" value={value} onChange={event => setValue(event.target.value)} />
         <button>Enter</button>
       </form>
     </div>
