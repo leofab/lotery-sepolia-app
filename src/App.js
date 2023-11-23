@@ -37,13 +37,22 @@ function App() {
       await lotery.methods.enter().send({
         from: accounts[0],
         value: web3.utils.toWei(value, 'ether')
-      }).catch(error => {
-        console.error('User denied account access:', error);
       });
-    } catch (error) {
-      console.log('Error submitting data:', error);
-    } finally {
       setMessage('You have been entered!');
+    } catch (error) {
+      if (error.code === 4001) {
+        console.error('User denied account access:', error);
+        try {
+          const errorMessage = JSON.parse(error.message).message;
+          setMessage(errorMessage || 'User denied account access');
+        } catch (parseError) {
+          console.error('Error parsing error message:', parseError);
+          setMessage('User denied account access');
+        }
+      } else {
+        console.error('Error submitting data:', error);
+        setMessage(error.message || 'Error submitting data');
+      }
     }
   };
 
@@ -62,6 +71,8 @@ function App() {
         <input type="number" value={value} onChange={event => setValue(event.target.value)} />
         <button>Enter</button>
       </form>
+      <hr />
+      <h1>{message}</h1>
     </div>
   );
 }
