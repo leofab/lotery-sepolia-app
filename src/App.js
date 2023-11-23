@@ -26,7 +26,21 @@ function App() {
       }
     };
     fetchData();
+
   }, []);
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const accounts = await web3.eth.getAccounts();
+      await lotery.methods.enter().send({
+        from: 'msg.sender',
+        value: web3.utils.toWei(value, 'ether')
+      });
+    } catch (error) {
+      console.log('Error submitting data:', error);
+    }
+  };
+
   return (
     <div className="App">
       <h2>Lotery Contract</h2>
@@ -37,7 +51,7 @@ function App() {
       </p>
       <hr />
       <h4>Want to try your luck?</h4>
-      <form>
+      <form onSubmit={onSubmit}>
         <label>Amount of ether to enter </label>
         <input type="text" value={value} onChange={event => setValue({ value: event.target.value })} />
         <button>Enter</button>
