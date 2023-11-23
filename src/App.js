@@ -8,6 +8,7 @@ function App() {
   let [players, setPlayers] = useState([]);
   let [balance, setBalance] = useState('');
   let [value, setValue] = useState(0);
+  let [message, setMessage] = useState('');
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -30,14 +31,19 @@ function App() {
   }, []);
   const onSubmit = async (event) => {
     event.preventDefault();
+    setMessage('Waiting on transaction success...');
     try {
       const accounts = await web3.eth.getAccounts();
       await lotery.methods.enter().send({
-        from: 'msg.sender',
+        from: accounts[0],
         value: web3.utils.toWei(value, 'ether')
+      }).catch(error => {
+        console.error('User denied account access:', error);
       });
     } catch (error) {
       console.log('Error submitting data:', error);
+    } finally {
+      setMessage('You have been entered!');
     }
   };
 
